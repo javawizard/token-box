@@ -166,17 +166,10 @@ var ActiveToken = React.createClass({
         // that instead.
         return (function(permanentValueIndex) {
           var value = instance.values[permanentValueIndex];
-          if (value == null) {
-            var onSpecChosen = function(spec) {
-              instance.setValue(permanentValueIndex, new Instance(spec));
-            };
-            return <SingleTokenChooser onSpecChosen={onSpecChosen}/>
-          } else {
-            var onClose = function() {
-              instance.setValue(permanentValueIndex, null);
-            };
-            return <ActiveToken instance={value} onClose={onClose}/>
-          }
+          var onChangeValue = function(newValue) {
+            instance.setValue(permanentValueIndex, newValue);
+          };
+          return <SingleTokenChoice value={value} onChangeValue={onChangeValue}/>;
         }(valueIndex++));
       }
     });
@@ -251,6 +244,40 @@ var SingleTokenChooser = React.createClass({
     );
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+var SingleTokenChoice = React.createClass({
+  propTypes: {
+    value: React.PropTypes.any,
+    onChangeValue: React.PropTypes.func
+  },
+  render: function() {
+    var value = this.props.value;
+    if (value == null) {
+      var onSpecChosen = function(spec) {
+        this.props.onChangeValue(new Instance(spec));
+      }.bind(this);
+      return <SingleTokenChooser onSpecChosen={onSpecChosen}/>
+    } else {
+      var onClose = function() {
+        this.props.onChangeValue(null);
+      }.bind(this);
+      return <ActiveToken instance={value} onClose={onClose}/>
+    }
+  }
+});
+
 
 
 
